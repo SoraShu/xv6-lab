@@ -20,3 +20,11 @@ myapi.key
 xv6.out*
 .vagrant/
 submissions/
+
+# clangd cache
+.cache
+# gen by `bear -- make qemu`
+compile_commands.json
+
+# submit dir
+submit
