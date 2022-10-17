@@ -22,3 +22,11 @@ xv6.out*
 submissions/
 ph
 barrier
+
+# clangd cache
+.cache
+# gen by `bear -- make qemu`
+compile_commands.json
+
+# submit dir
+submit
