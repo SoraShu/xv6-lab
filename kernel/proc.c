@@ -237,6 +237,8 @@ userinit(void)
   // and data into it.
   uvminit(p->pagetable, initcode, sizeof(initcode));
   p->sz = PGSIZE;
+  
+  ukvmcopy(p->pagetable, p->k_pagetable, 0, p->sz);
 
   // prepare for the very first "return" from kernel to user.
   p->trapframe->epc = 0;      // user program counter
@@ -263,8 +265,13 @@ growproc(int n)
     if((sz = uvmalloc(p->pagetable, sz, sz + n)) == 0) {
       return -1;
     }
+    if (ukvmcopy(p->pagetable, p->k_pagetable, p->sz, sz) != 0) {
+      return -1;
+    }
+
   } else if(n < 0){
     sz = uvmdealloc(p->pagetable, sz, sz + n);
+    ukvmdealloc(p->k_pagetable, p->sz, p->sz + n);
   }
   p->sz = sz;
   return 0;
@@ -291,6 +298,7 @@ fork(void)
     return -1;
   }
   np->sz = p->sz;
+  ukvmcopy(np->pagetable, np->k_pagetable, 0, np->sz);
 
   np->parent = p;
 
